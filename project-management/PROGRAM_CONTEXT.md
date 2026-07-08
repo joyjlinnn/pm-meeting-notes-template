@@ -79,10 +79,11 @@
 
 ## Key documents & links
 
-| What | Where |
+| Key documents & links | Where |
 |------|-------|
 | Open questions | [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) |
 | Next steps | [POC_NEXT_STEPS.md](POC_NEXT_STEPS.md) |
+| Message bus missing events | [message-bus/Message Bus - Missing Events Status.md](message-bus/Message%20Bus%20-%20Missing%20Events%20Status.md) |
 | Luca event mapping sheet | [SharePoint spreadsheet](https://darwincxllc-my.sharepoint.com/:x:/g/personal/joy_lin_darwin_cx/IQBoIcLDd7w0S74x5zw5Zvp7AZo8UY_M1LCfhxH7DOcMOSw?e=peuJAe) |
 
 ---

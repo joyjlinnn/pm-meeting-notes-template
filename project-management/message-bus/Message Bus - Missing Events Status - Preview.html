@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Message Bus — Missing Events Status</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2d3348;
+      --text: #e6e8ef;
+      --muted: #9aa3b5;
+      --accent: #5b9cf5;
+      --ok: #3d9a6a;
+      --warn: #c9a227;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 24px 32px 48px;
+      line-height: 1.45;
+    }
+    h1 { font-size: 1.35rem; margin: 0 0 6px; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover { filter: brightness(1.08); }
+    button.secondary { background: #3a4258; }
+    button.copied { background: var(--ok); }
+    .toast {
+      font-size: 0.85rem;
+      color: var(--ok);
+      align-self: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .toast.show { opacity: 1; }
+    h2 { font-size: 1rem; margin: 28px 0 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #222633;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(91, 156, 245, 0.06); }
+    .in-progress td:nth-child(7) { color: var(--accent); font-weight: 600; }
+    .scheduled td:nth-child(8) { color: var(--warn); }
+    code { font-size: 0.78rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .rollup { margin-top: 8px; }
+    pre#slack-preview {
+      display: none;
+      white-space: pre-wrap;
+      background: #12151c;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 0.8rem;
+      margin-top: 12px;
+    }
+    pre#slack-preview.show { display: block; }
+  </style>
+</head>
+<body>
+  <h1>Message Bus — Missing Events Status</h1>
+  <p class="sub">6 July 2026 · Preview before commit · DA-919 → DA-929</p>
+
+  <div class="toolbar">
+    <button type="button" id="copy-table">Copy table for Slack chat</button>
+    <button type="button" class="secondary" id="copy-canvas">Copy table for Slack Canvas</button>
+    <button type="button" class="secondary" id="toggle-preview">Show preview</button>
+    <span class="toast" id="toast">Copied — paste in Slack code block (```)</span>
+  </div>
+  <p class="sub" style="margin-top: -12px; margin-bottom: 20px;">
+    <strong>Chat:</strong> type <code>```</code>, paste, <code>```</code> — bordered ASCII table. &nbsp;
+    <strong>Canvas:</strong> New canvas → paste — renders as a real table.
+  </p>
+
+  <pre id="slack-preview"></pre>
+
+  <h2>11 missing events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Ticket</th>
+        <th>Darwin event</th>
+        <th>Fly</th>
+        <th>Owner</th>
+        <th>Status</th>
+        <th>Timeline</th>
+      </tr>
+    </thead>
+    <tbody id="main-rows"></tbody>
+  </table>
+
+  <h2>Rollup by bucket</h2>
+  <table class="rollup">
+    <thead>
+      <tr>
+        <th>Bucket</th>
+        <th>Tickets</th>
+        <th>Active work</th>
+        <th>Earliest E2E</th>
+      </tr>
+    </thead>
+    <tbody id="rollup-rows"></tbody>
+  </table>
+
+  <script>
+    const ROWS = [
+      { n: 1, ticket: "DA-919", darwin: "transaction.updated", fly: "SUBSCRIPTION_CHANGED", owner: "Sergio / Paul", status: "PO routed; not started", timeline: "None", cls: "" },
+      { n: 2, ticket: "DA-920", darwin: "contract.created", fly: "NEW_SUBSCRIPTION", owner: "Stefan / Paul", status: "In progress", timeline: "DFADE-154", cls: "in-progress" },
+      { n: 3, ticket: "DA-921", darwin: "contract.updated", fly: "SUBSCRIPTION_CHANGED", owner: "Stefan / Paul", status: "In progress", timeline: "DFADE-154", cls: "in-progress" },
+      { n: 4, ticket: "DA-922", darwin: "contract.deleted", fly: "SUBSCRIPTION_DELETED", owner: "Stefan / Paul", status: "In progress", timeline: "DFADE-154", cls: "in-progress" },
+      { n: 5, ticket: "DA-923", darwin: "customer.action.created", fly: "CONTACT_CREATED", owner: "Customer BAL / Paul", status: "PO routed; not started", timeline: "None", cls: "" },
+      { n: 6, ticket: "DA-924", darwin: "extended_customer.added", fly: "MULTI_LICENSE_NEW", owner: "Fahad", status: "Not on roadmap; needs new epic", timeline: "Blocked — scoping", cls: "" },
+      { n: 7, ticket: "DA-925", darwin: "extended_customer.license.updated", fly: "MULTI_LICENSE_CHANGED", owner: "Fahad", status: "Same", timeline: "Blocked — scoping", cls: "" },
+      { n: 8, ticket: "DA-926", darwin: "extended_customer.license.deleted", fly: "MULTI_LICENSE_DELETED", owner: "Fahad", status: "Same", timeline: "Blocked — scoping", cls: "" },
+      { n: 9, ticket: "DA-927", darwin: "transaction.premium.fulfillment", fly: "GIFT_DELIVERY", owner: "Kalrav", status: "Confirmed owner", timeline: "Sprint 20–21 (~Aug)", cls: "scheduled" },
+      { n: 10, ticket: "DA-928", darwin: "customer.email.updated", fly: "EMAIL_CHANGED", owner: "Customer BAL / Paul", status: "PO routed; not started", timeline: "None", cls: "" },
+      { n: 11, ticket: "DA-929", darwin: "customer.message.sent", fly: "CORRESPONDENCE_TRANSACTION", owner: "Sam / Ethan", status: "At capacity; Scott seeking resource", timeline: "Not before ~15 Aug", cls: "scheduled" },
+    ];
+
+    const ROLLUP = [
+      ["Paul — contract producers", "DA-920–922", "In progress", "DFADE-154 + staging"],
+      ["Producer-only (Paul candidate)", "DA-919, 923, 928", "Not started", "TBC"],
+      ["Fahad — enterprise", "DA-924–926", "Scoping / new epic", "No date"],
+      ["Kalrav — fulfillment", "DA-927", "Sprint 20–21", "~Aug (vendor-gated)"],
+      ["Sam/Ethan — correspondence", "DA-929", "Expose path; Scott seeking resource", "~mid-Aug earliest"],
+    ];
+
+    function asciiTable(headers, rows, maxWidths) {
+      const trunc = (s, w) => {
+        s = String(s);
+        return s.length > w ? s.slice(0, w - 1) + "…" : s;
+      };
+      const widths = headers.map((h, i) => {
+        const cap = maxWidths[i];
+        const natural = Math.max(h.length, ...rows.map((r) => trunc(r[i], cap).length));
+        return Math.min(natural, cap);
+      });
+      const pad = (s, w) => trunc(s, w).padEnd(w);
+      const row = (cells) => "│ " + cells.map((c, i) => pad(c, widths[i])).join(" │ ") + " │";
+      const hline = (l, m, r) => l + widths.map((w) => "─".repeat(w + 2)).join(m) + r;
+      return [
+        hline("┌", "┬", "┐"),
+        row(headers),
+        hline("├", "┼", "┤"),
+        ...rows.map((r) => row(r)),
+        hline("└", "┴", "┘"),
+      ].join("\n");
+    }
+
+    function statusTableForSlack() {
+      const headers = ["#", "Ticket", "Darwin event", "Owner", "Status", "Timeline"];
+      const rows = ROWS.map((r) => [String(r.n), r.ticket, r.darwin, r.owner, r.status, r.timeline]);
+      const maxW = [3, 10, 36, 22, 36, 22];
+      return [
+        "Message Bus — 11 Missing Events (6 Jul 2026)",
+        "",
+        asciiTable(headers, rows, maxW),
+      ].join("\n");
+    }
+
+    function canvasTableForSlack() {
+      const headers = ["#", "Ticket", "Darwin event", "Fly mapping", "Owner", "Status", "Timeline"];
+      const lines = [
+        "Message Bus — 11 Missing Events (6 Jul 2026)",
+        "",
+        "| " + headers.join(" | ") + " |",
+        "|" + headers.map(() => ":---").join("|") + "|",
+        ...ROWS.map(
+          (r) =>
+            `| ${r.n} | ${r.ticket} | ${r.darwin} | ${r.fly} | ${r.owner} | ${r.status} | ${r.timeline} |`
+        ),
+      ];
+      return lines.join("\n");
+    }
+
+    const main = document.getElementById("main-rows");
+    ROWS.forEach((r) => {
+      const tr = document.createElement("tr");
+      if (r.cls) tr.className = r.cls;
+      tr.innerHTML = `
+        <td>${r.n}</td>
+        <td><a href="https://darwin-cx.atlassian.net/browse/${r.ticket}">${r.ticket}</a></td>
+        <td><code>${r.darwin}</code></td>
+        <td>${r.fly}</td>
+        <td>${r.owner}</td>
+        <td>${r.status}</td>
+        <td>${r.timeline}</td>`;
+      main.appendChild(tr);
+    });
+
+    const rollup = document.getElementById("rollup-rows");
+    ROLLUP.forEach((row) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = row.map((c) => `<td>${c}</td>`).join("");
+      rollup.appendChild(tr);
+    });
+
+    const toast = document.getElementById("toast");
+    const preview = document.getElementById("slack-preview");
+    preview.textContent = statusTableForSlack();
+
+    async function copy(text, btn) {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast.classList.add("show");
+        if (btn) {
+          const orig = btn.textContent;
+          btn.textContent = "Copied!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = orig;
+            btn.classList.remove("copied");
+            toast.classList.remove("show");
+          }, 2000);
+        }
+      } catch (e) {
+        alert("Copy failed — select text from preview below.");
+        preview.classList.add("show");
+      }
+    }
+
+    document.getElementById("copy-table").onclick = (e) => copy(statusTableForSlack(), e.target);
+    document.getElementById("copy-canvas").onclick = (e) => copy(canvasTableForSlack(), e.target);
+    document.getElementById("toggle-preview").onclick = () => preview.classList.toggle("show");
+  </script>
+</body>
+</html>
