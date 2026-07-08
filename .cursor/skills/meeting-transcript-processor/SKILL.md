@@ -189,27 +189,26 @@ Quick recap: <2–4 semicolon-separated highlights from the call>
 
 @Full Name
 
-<action line 1 — no bullet symbol>
-<action line 2>
+• <action line 1>
+• <action line 2>
 ...
 
 @Full Name
 
+• <action>
 ...
 
 Still open: <comma-separated, max 3–4>
-
-Notes: `meeting-summaries/<Summary file>.md`
 ```
 
 ### Rules
 
 - **Title line** — `WSI API — SoS summary (Tue Jul 8)` style (day, abbreviated month, date)
 - **Quick recap** — one line, semicolon-separated clauses; high-level only
-- **Per person** — `@First Last` on its own line, blank line, then **plain action lines** (no `•` bullets)
-- Multiple items for one person → **one line per item**, stacked (not paragraphs)
-- Use `@Name` when referencing another person in an action line
-- Short, imperative phrasing ("Fix X", "Confirm Y with @Z") — match prior digests
+- **Per person** — `@First Last` on its own line, blank line, then **`•` one bullet per distinct task**
+- Each separate action = its own `•` line — never combine multiple tasks into one bullet
+- Use `@Name` inside a bullet when referencing another person
+- Short, imperative phrasing ("Fix X", "Confirm Y with @Z")
 - Include **Still open** line for carried-forward questions
 - Only tag people with action items or explicit asks
 - No "thanks everyone", no emoji unless user uses them in their examples
@@ -224,11 +223,11 @@ Quick recap: message bus mapping mostly done where Darwin events exist; bridge P
 
 @Luca Kersting
 
-focus on remaining field-level mapping (endpoint rows)
-gap ticket dependency mapping for the rest of the endpoints (capability level please so we can start assigning tickets to BAL owners for build)
+• focus on remaining field-level mapping (endpoint rows)
+• gap ticket dependency mapping for the rest of the endpoints (capability level please so we can start assigning tickets to BAL owners for build)
 
 @Carsten
 
-Review @andie's message bus mapping PR
-...
+• Review @andie's message bus mapping PR
+• ...
 ```
