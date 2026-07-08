@@ -28,8 +28,8 @@ This repo holds living program documents. The human owner is the source of truth
    resolved questions without explicit user request.
 6. After processing, **list files created/updated** and call out remaining open questions and
    action items assigned to the user.
-7. **Generate a Slack digest** — casual copy-paste message tagging attendees with their priority
-   items from the call; save under `meeting-summaries/Slack - <Topic> YYYY-MM-DD.md`.
+7. **Generate a Slack digest** — tight bullet list per `@person` (no paragraphs); save under
+   `meeting-summaries/Slack - <Topic> YYYY-MM-DD.md`.
 
 ## General editing
 

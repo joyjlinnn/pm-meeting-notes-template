@@ -176,39 +176,37 @@ If the user provides a file or long paste, save a copy to:
 
 ## Step 4 — Generate Slack digest
 
-After every meeting summary (especially **Scrum of Scrums**), produce a **casual Slack message** the user
-can copy-paste to their team.
+After every meeting summary (especially **Scrum of Scrums**), produce a **short, casual Slack message**
+the user can copy-paste. **Keep it tight** — bullets, not paragraphs.
 
-**Save to:** `project-management/meeting-summaries/Slack - <Topic> YYYY-MM-DD.md` (optional but recommended).
+**Save to:** `project-management/meeting-summaries/Slack - <Topic> YYYY-MM-DD.md`
 
 ### Format rules
 
-- **Casual tone** — short sentences, friendly, not corporate memo style
-- **Tag each person** with `@name` (use first names from attendees; user adjusts to Slack handles)
-- **Per person:** 2–5 bullet priorities for the day/week based on what was discussed and action items
-- Lead with a one-line meeting recap
-- Call out blockers or "on hold" items briefly
-- Link to the summary file path (not required to paste full URL)
-- End with a short thanks
-- Use emoji sparingly (0–3 total) if it fits the team's style
+- **Brief** — one line opener max; skip long explanations
+- **Per person:** `@name` then **bullet list** of their items (even if only one item, use a bullet)
+- Multiple items for one person → **always bullets**, never a run-on sentence
+- Short phrases, not full sentences where possible
+- One line for shared/open items at the end (optional)
+- Link to summary file path only — no essay
+- 0–1 emoji in opener; skip emoji elsewhere unless user prefers otherwise
+- Only tag people with action items or explicit asks
 
 ### Template
 
 ```markdown
-hey team — quick SoS recap from today 👋
+SoS recap M/D 👋
 
-@person — priority items:
-• <action 1>
-• <action 2>
+**@person**
+• <item 1>
+• <item 2>
 
-@person — ...
-...
+**@person**
+• <item>
 
-open items we're still watching: <1–3 open questions>
+Still open: <comma-separated, max 3>
 
-full notes: `project-management/meeting-summaries/<Summary file>.md`
-
-thanks everyone 🙏
+Notes: `meeting-summaries/<Summary file>.md`
 ```
 
-Only include people who had **action items or explicit mentions** on the call. Skip attendees with nothing assigned unless they need a heads-up.
+**Avoid:** "big day for you", "when you can", "ping me if…", repeating context already in the summary.

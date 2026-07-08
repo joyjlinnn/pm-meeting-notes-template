@@ -17,8 +17,8 @@ When the user provides a meeting transcript (paste or file under `project-manage
    `<Topic> - Summary YYYY-MM-DD.md`.
 2. **Update** `project-management/OPEN_QUESTIONS.md` — add a dated update block; resolve or add questions.
 3. **Update** `project-management/POC_NEXT_STEPS.md` — refresh the "Current plan" section; move superseded items to Historical.
-4. **Generate a Slack digest** — casual message tagging each person and their priority items; save to
-   `project-management/meeting-summaries/Slack - <Topic> YYYY-MM-DD.md` and show in chat.
+4. **Generate a Slack digest** — short bullets per `@person`; save to
+   `project-management/meeting-summaries/Slack - <Topic> YYYY-MM-DD.md` and show in chat. Keep it brief.
 
 Follow the format in existing files, `project-management/PROGRAM_CONTEXT.md`, and
 `.cursor/skills/meeting-transcript-processor/SKILL.md`.
