@@ -62,7 +62,71 @@ project-management/
 .cursor/
   skills/meeting-transcript-processor/SKILL.md
   rules/meeting-notes-workflow.mdc
+  rules/collaboration.mdc
+  rules/standards-bootstrap.mdc
 ```
+
+---
+
+## Cursor rules setup
+
+This template ships with **three repo rules** and **one skill** under `.cursor/`. They apply
+automatically when you open the repo folder in Cursor (not the parent workspace).
+
+| File | Purpose |
+|------|---------|
+| `rules/standards-bootstrap.mdc` | Tells the agent to load the skill + rules before editing |
+| `rules/meeting-notes-workflow.mdc` | Transcript → summary → open questions → next steps format |
+| `rules/collaboration.mdc` | Review with you before git; ask when unclear; no guessing decisions |
+| `skills/meeting-transcript-processor/SKILL.md` | Step-by-step ingest template and quality rules |
+
+These mirror the patterns used in the
+[WSI Darwin migration analysis](https://github.com/DarwinCX/wsi-darwin-migration-analysis) repo:
+a **workflow rule**, a **collaboration/git hygiene rule**, a **bootstrap rule** that forces the
+agent to read skills first, and a **domain skill** for the core task.
+
+### What each rule enforces
+
+**Collaboration (`collaboration.mdc`)**
+
+- Show a change summary and **ask you to review before any commit**
+- **Never commit or push** unless you explicitly ask
+- **Raise questions** when a transcript is ambiguous, incomplete, or contradicts existing docs
+- **Do not invent** decisions, owners, or dates — park unknowns in `OPEN_QUESTIONS.md`
+- **Preserve history** — don't delete old summaries or historical plan sections without your OK
+- After each ingest, list what changed and what's still open
+
+**Meeting notes workflow (`meeting-notes-workflow.mdc`)**
+
+- Standard summary sections: date, duration, topic, attendees, overview, decisions, open questions, actions, notes
+- Update `OPEN_QUESTIONS.md` and `POC_NEXT_STEPS.md` on every transcript ingest
+- Append and restructure — don't wipe prior content
+
+**Bootstrap (`standards-bootstrap.mdc`)**
+
+- Agent must read the skill + rules before editing `project-management/`
+
+### Optional: Cursor User Rules (global)
+
+Repo rules apply inside this project. For habits you want in **every** Cursor session, add these
+under **Cursor Settings → Rules → User Rules** (customize the owner name):
+
+```
+- Only create git commits when I explicitly ask. Before committing, show me what changed and wait for my review.
+- Never push to the remote unless I explicitly ask.
+- When processing meeting transcripts, ask clarifying questions if anything is ambiguous or missing.
+- Do not invent decisions, owners, or dates — mark unknowns as Open in OPEN_QUESTIONS.md.
+- After updating docs, summarize which files changed and what questions remain open.
+```
+
+### Forking for your program
+
+When you **Use this template** for a new project:
+
+1. Keep all `.cursor/rules/` and `.cursor/skills/` files as-is (they travel with the repo).
+2. Replace sample content in `project-management/`.
+3. Optionally add a program-specific rule, e.g. `.cursor/rules/my-program-context.mdc`, with your
+   team names, Jira board, and key doc links (similar to how the WSI workspace uses a project-context rule).
 
 ---
 

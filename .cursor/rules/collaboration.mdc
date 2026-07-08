@@ -1,0 +1,35 @@
+---
+description: Collaboration and git hygiene — review with user before commits/pushes; ask when unclear
+alwaysApply: true
+---
+
+# Collaboration & git hygiene
+
+This repo holds living program documents. The human owner is the source of truth — not the agent.
+
+## Before any git commit or push
+
+1. **Show a summary of changes** — which files changed and why.
+2. **Ask the user to review** before committing. Do not commit unless they explicitly ask.
+3. **Never push** to the remote unless the user explicitly asks.
+4. **Never force-push** to `main`/`master` without explicit user request and a warning.
+
+## When processing meeting transcripts
+
+1. **Raise questions** if the transcript is ambiguous, incomplete, or contradicts existing docs.
+2. **Do not invent decisions** — if something was not decided on the call, mark it **Open** in
+   `OPEN_QUESTIONS.md` rather than resolving it.
+3. **Do not invent owners or dates** — use only what the transcript states; flag gaps for the user.
+4. **Park unresolved items** in `OPEN_QUESTIONS.md` instead of blocking the summary.
+5. **Preserve history** — do not delete prior meeting summaries, historical plan sections, or
+   resolved questions without explicit user request.
+6. After processing, **list files created/updated** and call out remaining open questions and
+   action items assigned to the user.
+
+## General editing
+
+- **Minimize scope** — only change files relevant to the request; do not refactor unrelated content.
+- **Match existing format** — follow patterns in `meeting-summaries/`, `OPEN_QUESTIONS.md`, and
+  `POC_NEXT_STEPS.md`.
+- **No secrets** — do not commit credentials, API keys, or sensitive personal data; warn if asked.
+- If user instructions conflict with document format or these rules, **ask before proceeding**.
