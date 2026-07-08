@@ -115,6 +115,7 @@ agent to read skills first, and a **domain skill** for the core task.
 
 - Standard summary sections: date, duration, topic, attendees, overview, decisions, open questions, actions, notes
 - Update `OPEN_QUESTIONS.md` and `POC_NEXT_STEPS.md` on every transcript ingest
+- **Generate a casual Slack digest** per person with priority items — saved to `meeting-summaries/Slack - <Topic> YYYY-MM-DD.md`
 - Append and restructure — don't wipe prior content
 
 **Bootstrap (`standards-bootstrap.mdc`)**

@@ -172,3 +172,43 @@ If the user provides a file or long paste, save a copy to:
 
 - Briefly tell the user which files were created/updated.
 - List any questions that remain **Open** and top action items assigned to them if relevant.
+- **Generate a Slack digest** (Step 4 below) and include it in the chat response.
+
+## Step 4 — Generate Slack digest
+
+After every meeting summary (especially **Scrum of Scrums**), produce a **casual Slack message** the user
+can copy-paste to their team.
+
+**Save to:** `project-management/meeting-summaries/Slack - <Topic> YYYY-MM-DD.md` (optional but recommended).
+
+### Format rules
+
+- **Casual tone** — short sentences, friendly, not corporate memo style
+- **Tag each person** with `@name` (use first names from attendees; user adjusts to Slack handles)
+- **Per person:** 2–5 bullet priorities for the day/week based on what was discussed and action items
+- Lead with a one-line meeting recap
+- Call out blockers or "on hold" items briefly
+- Link to the summary file path (not required to paste full URL)
+- End with a short thanks
+- Use emoji sparingly (0–3 total) if it fits the team's style
+
+### Template
+
+```markdown
+hey team — quick SoS recap from today 👋
+
+@person — priority items:
+• <action 1>
+• <action 2>
+
+@person — ...
+...
+
+open items we're still watching: <1–3 open questions>
+
+full notes: `project-management/meeting-summaries/<Summary file>.md`
+
+thanks everyone 🙏
+```
+
+Only include people who had **action items or explicit mentions** on the call. Skip attendees with nothing assigned unless they need a heads-up.
