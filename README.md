@@ -102,3 +102,33 @@ project-management/
 This template ships with **placeholder content** (sample kickoff meeting, Q1–Q3, starter
 action list) so you can see the format before uploading real transcripts. Replace or extend
 as you go.
+
+---
+
+## Publish / fork for your program
+
+**Suggested GitHub repo names** (pick one that fits your org):
+
+| Name | Best for |
+|------|----------|
+| `pm-meeting-notes-template` | General PO template — **recommended** |
+| `cursor-meeting-notes-workflow` | Emphasizes Cursor + transcript workflow |
+| `meeting-transcript-living-docs` | Descriptive: transcript → living docs |
+| `product-owner-meeting-workflow` | Very explicit audience |
+
+After `gh auth login`, from this folder:
+
+```bash
+gh repo create DarwinCX/pm-meeting-notes-template \
+  --public \
+  --source=. \
+  --remote=origin \
+  --push \
+  --description "Cursor template: meeting transcripts → summaries, open questions, and next steps for product owners"
+```
+
+To mark it as a GitHub template repo (so POs can click **Use this template**):
+
+```bash
+gh repo edit DarwinCX/pm-meeting-notes-template --template
+```
