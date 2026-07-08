@@ -1,0 +1,233 @@
+WSI API Project - Scrum of Scrums-20260708_080154-Meeting Recording
+8 July 2026, 12:01pm
+31m 47s
+ Joy Lin started transcription
+ Carsten Perthel   0:04 Let's see. But. put some thoughts into the SAP to SAP DSB to Darwin client mapping. Because I just realized this morning that we need this also in the message bus project. Um... I think we talked about this last week or so, and Jason was pretty happy that the bridge will take care of this. But I'm currently thinking how to implement it or where to implement that correctly, because I don't want to have two sources of truth for this mapping logic. Yeah, I didn't come to a conclusion yet how to implement it. correct way to the right way or to the right place, at least. Should it be a service, a centralized service? Is this more or less, yeah, more or less a static mapping? So just using a Jason file as you did, Andy, for the message bus. It's also possible, but then we also need this Jason mapping file. We need that in the message bus and also in the bridge code. So maybe it's a library then, or part of the library.
+ Jason Writtenhouse   1:35 Support.
+ Marco Andreas Wulf   1:42 I.
+ Carsten Perthel   1:44 Um...
+ Jason Writtenhouse   1:45 Help me understand what we're mapping here. We're mapping the client codes.
+ Carsten Perthel   1:51 Yeah. Yeah, the the the SAP client tenant number of SAP to what's on the dominant side, 999, something like that.
+ Jason Writtenhouse   2:04 So, my understanding is that needed to happen in WSI itself.
+ Carsten Perthel   2:04 Um...
+ Jason Writtenhouse   2:10 Because that information needs to be passed to the bridge.
+ Carsten Perthel   2:13 Exactly. So my first idea was that's information that a bridge provides, but we need this also inside the message bus.
+ Jason Writtenhouse   2:17 Hiep. Well, hold on. It's not information the bridge provides. You are already making a decision in WSI to call Darwin or SAP, right? What's the what configuration drives that switch?
+ Carsten Perthel   2:38 Okay, yeah, yeah, we have this also on WSI. You're right. Yeah, just forget about that. Yeah, we have this information. This also in WSI. Yeah, you're right. So
+ Jason Writtenhouse   2:54 Does that provide the the client to client mapping you need? My understanding is that it did, and it always would, and that was already built in, because the original design was that would have to, right? OK.
+ Carsten Perthel   3:02 Yeah, yeah, yeah, yeah, you're right. I mixed that up. We need it in WSI and we need it also inside a message bus. We don't need it inside a bridge.
+ Jason Writtenhouse   3:12 So where does WSI get it from?
+ Carsten Perthel   3:15 That's a static, static mapping, static and statically in the code, yes, um, but...
+ Jason Writtenhouse   3:18 Static mapping. So, does...
+ Marco Andreas Wulf   3:21 In the in the configuration.
+ Carsten Perthel   3:23 In the configuration, yes, it's part of the configuration.
+ Jason Writtenhouse   3:27 Okay, so... The message bus needs to have needs to have a copy of that configuration. The question is, what's the source of truth? Right? So does that information about the SAP client even live in Darwin? I don't even think that information even have that. So the source of truth has to come from.
+ Carsten Perthel   3:49 I don't think so.
+ Jason Writtenhouse   3:52 the WSI, wherever that configuration you just described WSI has is. Source of truth, the only known source of truth I can see for that at this point. So it's one thing to have it there. Now you can pass it into the bridge. Right? You can and make sure that because the bridge is ultimately going to need to know it's 9999.
+ Carsten Perthel   4:16 Yeah, exactly.
+ Jason Writtenhouse   4:17 to get it down to it, right? So where is that going to come from? Either the bridge has to look it up, it has nothing to look it up against, or it gets passed in to the bridge from WSI, which is probably what has to happen, right? So, okay, so we got that covered. How does the message bus service get access to the same information?
+ Carsten Perthel   4:29 Yeah. Yeah.
+ Jason Writtenhouse   4:38 I think is the the the problem at hand.
+ Carsten Perthel   4:39 Yeah, yeah, exactly.
+ Jason Writtenhouse   4:43 In the short term.
+ Carsten Perthel   4:43 And that.
+ Jason Writtenhouse   4:45 We probably need to just roll with a JSON file.
+ Carsten Perthel   4:51 I think so, because I was thinking about it's not worth building up a global service for that, because then we are introducing another call to a service for each and every bridge call. So yeah, you can, sure you can cache this, but This is just, just too much, yeah, too much, too much friction and too much, it doesn't, it isn't worth it.
+ Jason Writtenhouse   5:14 What we don't? Right. If we want to do that, we don't have to do that today, is my point. We can just unblock. Because here's the thing, what is being mapped specifically? It's fixed client codes to pretty much fixed client codes. This isn't something that they're going to be in every single day needing to change. I say that.
+ Carsten Perthel   5:21 Yeah. Yeah. No, that's... No, it's.
+ Jason Writtenhouse   5:37 Yeah. Right.
+ Carsten Perthel   5:40 It's an ongoing process, while we're at the beginning of mapping and implementing stuff, but the number of clients on an SAP is a finite number, so we have them mapped over when, yeah.
+ Jason Writtenhouse   6:00 And the codes don't change, right?
+ Carsten Perthel   6:00 Um... Yeah, and the code doesn't change anymore later that.
+ Jason Writtenhouse   6:04 Okay, so yeah, let's just have the message bus project use a config file in an unblocking MVP way. And if we decide we want to put in a service, then we can do a ticket for that. But Joy, I don't think we should even do a ticket for that right now.
+ Carsten Perthel   6:10 Yeah, yeah. Yeah. Yeah, I don't think a service, I don't think a service is worth it, because it will also introduce some more latency along the way, because you have to call this service before calling the next the next service, so, and also the logic needs to be.
+ Joy Lin   6:22 AR.
+ Carsten Perthel   6:38 on the WSI side because it's not a one-to-one mapping between SAP client number and Darwin client number. It's more or less a mapping between SAP client number and sales organization to Darwin client. Because we have this hierarchical structure on SAP with client and organization or and some of our of our clients they we will migrate them over not client per client but sales organization per sales organization. because they have some, they have a couple of their clients inside an SAP tenant and they don't want to migrate all at once. So it's more or less on the WSI side of things that
+ Jason Writtenhouse   7:18 Mhm.
+ Carsten Perthel   7:36 the mapping needs to take place. And once it's defined, it will stay as is, will not change along the way. It's static information. So, I've I've just... Yeah, we just need to come up with a solution how to consume this configuration file or this Jason file, not sure how to, but to put it and consume this directly inside of the message bus code as well.
+ Jason Writtenhouse   8:13 Okay, so I think we solved it in principle.
+ Carsten Perthel   8:16 Yeah, it's just a matter that we have to implement that.
+ Jason Writtenhouse   8:21 Yeah, and... Gupta.
+ Carsten Perthel   8:24 And that's the that's the SAP Darwin client mapping thing. Marco and I would had a look at the BP number and so the client the client endpoints and also the this client attributes endpoint. There was some VAI generated code based on some artifacts that were in. The WSI. and created some legacy code for the bridge for an endpoint that's not existing anymore. I think there was, at some point, there was an endpoint on the bell with I think I've closed it already.
+ Jason Writtenhouse   9:17 It may have been realigned.
+ Carsten Perthel   9:19 Yeah, exactly. So it's not in the contract. So the AI said, okay, it's kind of a legacy code. It's not in the contract or not yet in the contracts. So it kept this separate, but this endpoint doesn't exist anymore. Or it's realigned or it's, yeah, there is this attribute endpoint in the bell.
+ Jason Writtenhouse   9:20 But...
+ Carsten Perthel   9:39 That provides the desired functionality. So...
+ Jason Writtenhouse   9:43 Customer.
+ Carsten Perthel   9:46 Yeah, it's the the the the attribute under the attribute routing.
+ Jason Writtenhouse   9:50 Hold on. Are we talking about customer attributes?
+ Carsten Perthel   9:58 Yeah. Yeah, customer and then the attributes, yes.
+ Jason Writtenhouse   10:03 So, the path should be... had a different.
+ Carsten Perthel   10:15 A different path, it.
+ Jason Writtenhouse   10:17 Right, okay, so this is an artifact of the iterational development of something got corrected along the way. All right.
+ Carsten Perthel   10:21 Yes, yes, yes. But the AI got it, got it. It's not wrong, but didn't align it to the more, the most recent version of the contract. So that's an easy thing to fix, but
+ Jason Writtenhouse   10:26 Wrong.
+ Carsten Perthel   10:41 In Adams, yeah.
+ Jason Writtenhouse   10:41 So you got. You're pointing to your lo to local copies of the bow when you're running this.
+ Carsten Perthel   10:47 Um...
+ Jason Writtenhouse   10:48 or you just go by what was at that time, Adam.
+ Carsten Perthel   10:51 Yeah, yeah, yeah. I using, I'm using the published ones for now, but I can switch to the local versions if needed.
+ Jason Writtenhouse   10:54 Okay, alright. Right. Well, I'm just, they change. So how do we... They don't change much. It's not like we're changing things, but we're adding to it.
+ Carsten Perthel   11:09 Yeah, I think that's respected in the analysis repo because there's also a note, there was a note in one of the reports that the attribute endpoint cannot be implemented right now because there are some decisions to be made first and then We the the the endpoint can be implemented in the bridge. or in WSI. Format it was in WSI, but I changed all mapping logic that it's done by the bridge. So the AI reflected that in the documentation as well. So
+ Jason Writtenhouse   11:39 Okay. Yes. So is there a gap currently then? What do we need to do?
+ Carsten Perthel   11:57 But... I just need to understand how this attribute endpoint works, because I think it's just opt-in attributes. Is it? Is it just that? Because in the in the in SAP, it's this this key value storage we talked about earlier. In the customer attributes. There are some opt-in. Parameters mentioned, not sure about those. Yeah, opt-in code and value. So it's. So it should be the same.
+ Jason Writtenhouse   12:36 Okay, right. I'm remembering this now. Before, we only had the ability to pull back things that matched on code. And I believe, I feel like I made a change recently that allowed it to match on value as well. There's nothing coming back. I think this is what you're looking for.
+ Carsten Perthel   12:57 Yeah. So what's inside the SAP attribute, the key, it's the opt-in code, and what's thought is the... Opt-in value then.
+ Jason Writtenhouse   13:11 Right, so this is how you can search the customers that match that, and then in marketing val, or actually in config val.
+ Carsten Perthel   13:15 Yeah, yeah.
+ Jason Writtenhouse   13:23 Specifically, part of under marking now. The attributes are actually just preferences. So this is where at the client level is the control plane for configuring what those preferences are.
+ Carsten Perthel   13:34 Okay. Okay.
+ Jason Writtenhouse   13:36 Um, let's look here. I think this is a... Client preference, and then we have subscription preferences. by product and client. I think this is the one. So, for this client. These are all the preferences that are configured and available in Darwin for them. So, for this customer... We want to bring back all of the customers that have a record stored. With that opt-in code.
+ Carsten Perthel   14:19 Yeah, okay.
+ Jason Writtenhouse   14:21 And there they are. And then, oh, by the way, we want to filter that back to only ones whose value that opt-in code matches, matches foo.
+ Carsten Perthel   14:22 Yeah. Ah, okay. So it distinguishes between which customer has this code and which customer has this code and value.
+ Jason Writtenhouse   14:32 And there are none. with the matching value. And that was the enhancement that I put in. It's all coming back to me now. It feels like a...
+ Carsten Perthel   14:38 And the matching value, okay, yeah. Yeah.
+ Jason Writtenhouse   14:46 Years ago, it was like 3 weeks ago.
+ Carsten Perthel   14:47 It's just that inside some of the documentation in Adam's repo, there was this note that this attribute mapping has to be refined and there are some questions that need to be resolved first. And so here they are. So it's just.
+ Jason Writtenhouse   15:01 Well, here they are.
+ Carsten Perthel   15:07 Now, that... We can use that for the implementation. Okay, that was this one. Do I have another thing to bring up? Yeah, that was another thing we... saw this morning that the... That is just if you read the customer by the ID, you're just getting back the first address that's assigned.
+ Jason Writtenhouse   15:44 Customer by ID, hold on.
+ Carsten Perthel   15:44 But it's... Yeah.
+ Jason Writtenhouse   15:50 Ohh.
+ Carsten Perthel   15:50 I think it's not in the bell, because I think you get all the addresses back in the bell response. It's just that the bridge only maps the first. and ignores the rest.
+ Jason Writtenhouse   16:07 Okay, and that's, well, that's an abstraction layer requirement. It's like, here's what we have, what is needed.
+ Carsten Perthel   16:11 Yes, and... Yes, and there are also some references in the documentation that this is not in scope for the POC. It's something to... Work on later, so that's also the why the why the AI didn't generate any code. Dealing with multiple addresses.
+ Jason Writtenhouse   16:39 So, I feel like a question came up. No, never mind. I think the question came up was around there being multiple address lines. So we'll see, that's the thing. So you just said, well, I think what, what am I, I got pinged too. Darwin's returning back multiple addresses. You're just taking the first one and using it, sending it back to the bridge. Right. So, Joy, that's a perfect example of is that the right requirement. So I lean on these guys as SNEs to make that best guess that that's the right thing to do to move us forward. So that's what we do. We keep moving forward. Otherwise, we're blocked on it. What's the decision? What do we do, right? But this is something that's definitely important when it comes back to user acceptance testing.
+ Carsten Perthel   17:30 I think this will come up sooner or later, but it's just that it wasn't visible to me because the AI just generated code and had the decision in mind that we just have to deal with one address and not multiple addresses. And it was not visible to me that
+ Joy Lin   17:30 OKOK.
+ Jason Writtenhouse   17:30 Right.
+ Joy Lin   17:46 First one. Yeah.
+ Carsten Perthel   17:50 there is this restriction in place. And I had to prompt the AI, why do we only use the first address and not all of them? Because there is a parameter in one of those endpoints to get all addresses. And then the AI pointed me in the right direction and said, okay, no, it's Here in this document, there is the scope. The scope is defined here, and it's clearly said here, just use the first address and multiple addresses is something to care for later. So it was just that it's not what was not visible to me.
+ Jason Writtenhouse   18:20 Sh.
+ Carsten Perthel   18:28 and just came up during our testing, our manual testing.
+ Jason Writtenhouse   18:33 So, what is the requirement around that? Like, I'm not saying we have we answer that right here, 'cause clearly we can't, but...
+ Joy Lin   18:33 Mhm.
+ Jason Writtenhouse   18:43 I mean, does SAP not return back multiple addresses?
+ Carsten Perthel   18:47 Sure, yeah, there's a special, there's one, I think, one parameter for that. But the WSI will send in this parameter. The parameter will be processed by the bridge, but then later ignored in the mapping. Because this restriction was in place, just care for the first returned addresses, the first returned address and not the other ones. So it's an easy fix if you get the mapping right, but it was something that was hidden inside the documents that the AI used for Creating the code.
+ Jason Writtenhouse   19:25 Adam's documents.
+ Carsten Perthel   19:26 Yes.
+ Jason Writtenhouse   19:28 Okay, so... Adam's documents are not gospel. They're an approach. Right, and if that approach helps us, and I'll be honest with you, the approach is a lot to absorb.
+ Carsten Perthel   19:42 Yes, that's true. Yeah.
+ Jason Writtenhouse   19:43 It's a lot to absorb, but there is a lot of value in there too. But we, you know, it's... So do we deal with that right now, or do we defer it? Like, who cares what Adam's original document said? What do we need to do? Do we have, are we, are we, do we have the information we'd even need to handle that situation? And should we? Because I don't know what the expected outcome is.
+ Carsten Perthel   20:12 Yeah, Singh. Yeah, I'm even have no. Idea how the response. Looks like if there are multiple addresses, but that's something Marco and I can have a look at, but there sure are multiple addresses available, so it should be just... I think of mapping it correctly, but...
+ Jason Writtenhouse   20:36 Well, it's what does WSI need to return back? Does it supposed to return back multiple addresses?
+ Carsten Perthel   20:39 Yes. Yeah, it's supposed to return if inside a request, the parameter said return all addresses true, then we should return all addresses that are available.
+ Jason Writtenhouse   20:52 that we have to Auto that. No.
+ Carsten Perthel   20:58 Yeah, no.
+ Jason Writtenhouse   21:02 I mean, so when the client calls WSI and they pass the flag, return all addresses or not, then that takes that flag and it calls SAP and it gets back the addresses and it based on that flag, it returns back all of them or one of them? Or does it pass the flag to SAP and that let it decide? Either way, There's a decision happening there, right? So the...
+ Carsten Perthel   21:25 Yes, yes, it's just that that. The implementation. The AI generated implementation. Use. Adam's documents to steer what has to be implemented. And it was not clear to me that there was this restriction, this decision to just use the first address. I think it's not a problem that we that we have to that we have to implement it. It's just because it wasn't visible and it just was visible. after testing to us, that there's something missing. It's just a small problem along the way using the analysis repo and the AI to help us implementing all this stuff. It's just, it's not a major problem, it's just some obstacle we came.
+ Jason Writtenhouse   22:06 Uh-huh. Yeah.
+ Carsten Perthel   22:25 Around this morning, that... There may be some of those cases that we have to address later or look, yeah, solve later.
+ Jason Writtenhouse   22:28 Ops. Okay, I think I understand, right? So, it sounds like two things were kind of outdated and stale in that information, what you just said, and the... you know, the fact that this was built out. Right, so assumptions. Okay.
+ Joy Lin   23:00 And then who can clear up the assumptions then?
+ Jason Writtenhouse   23:04 I mean, I got to know where the invalid assumptions are. And that's all what we're doing.
+ Carsten Perthel   23:10 Exactly, yeah. And that's nothing that an AI can help us with currently, at least not with this stuff, because if I...
+ Joy Lin   23:10 Mm.
+ Jason Writtenhouse   23:11 If.
+ Carsten Perthel   23:23 prompted correctly and then I get the answer back, but it didn't tell me during the implementation step. Yeah, I'm just implementing this that way because I have this restriction in place to do it exactly as it was defined before. Just. I didn't have the understanding exactly how DAI respects all the documents and all what's decided inside the documents or written inside the documents.
+ Jason Writtenhouse   23:54 Right. S. Okay, um...
+ Carsten Perthel   24:00 It's just a, yeah, small surprise that, okay.
+ Jason Writtenhouse   24:00 So, what, what? Where do we go? Where do we go from here? I guess the question. I mean...
+ Carsten Perthel   24:04 Something. The next steps are pretty clear. pull out the old legacy code dealing with the attributes, use the published contract versions of the attributes and attribute endpoints, and come up with a plan how to deal with multiple addresses if the flag is set via WSI.
+ Jason Writtenhouse   24:40 Okay. Alright, where else? What do you got, Joy? What do you think?
+ Joy Lin   24:54 Ideally, we don't defer this one because I'm just checking that a lot of her.
+ Jason Writtenhouse   25:01 Mhm.
+ Joy Lin   25:01 Clients, like I'm checking the usage log for this one, and it's not something that we can skip. But we can always come back to it maybe in a few weeks from now and move on to the rest are more straightforward. What do you guys think?
+ Jason Writtenhouse   25:16 Um... I think Carsten and his, you have this problem in your mind right now. It's probably better to solve it.
+ Carsten Perthel   25:24 Yeah, let's just do it. Yeah, solve it. Yeah.
+ Joy Lin   25:27 Yeah. Okay.
+ Carsten Perthel   25:29 One thing less, one thing less to care, yeah.
+ Jason Writtenhouse   25:29 Sorry, Joy, I, I know you, I know you wanna iterate, but there's gonna be that. cost overhead of circling back to it in three weeks.
+ Joy Lin   25:39 Mhm, mhm.
+ Carsten Perthel   25:40 Yeah, because the functionality is in SAP, functionality is in Darwin. It's not that's a gap issue. That's referring to a functionality, to a feature that's not there. It's there or just not respected right now.
+ Jason Writtenhouse   25:41 IT. IT. IT. The. Here's the thing, it's not going to be that hard to fix, really. If you explain to the little chat bot everything we just talked about, it will probably come up with 80% of it. Just got to watch it, make sure it's right.
+ Joy Lin   25:56 Yeah.
+ Carsten Perthel   26:03 Exactly, yes. Yes.
+ Joy Lin   26:06 Mm.
+ Jason Writtenhouse   26:10 It's like voodoo, man. I took me a long time to get comfortable with.
+ Joy Lin   26:10 Okay.
+ Jason Writtenhouse   26:16 What is this ********* magic that's supposedly doing all this stuff behind the scenes? And it's gotten better, like... Okay, I used to care a lot about what code syntactically look like, and now I care more about how it's behaving and is it meeting the objective. right, and high level sanity about what it syntactically looks like. And that's what those rules and skills are supposed to guardrail, all that, so you don't have to worry about it. It's A lot.
+ Joy Lin   26:37 Mm.
+ Jason Writtenhouse   26:47 This approach is a lot to absorb, and I'm no expert at it either, but anyway.
+ Joy Lin   26:52 Okay.
+ Jason Writtenhouse   26:53 You're seeing... Okay.
+ Carsten Perthel   26:56 Um, yeah, and...
+ Jason Writtenhouse   26:56 Sorry, I got different context.
+ Carsten Perthel   27:00 Yes. And also, Andy, I merged the PR.
+ Joy Lin   27:00 Yeah.
+ Andie   27:06 Yeah, yeah.
+ Carsten Perthel   27:06 In the message bus, in the message bus, I think the mappings, they don't align 100% with a mapping document, but...
+ Andie   27:11 Okay. You.
+ Carsten Perthel   27:17 I think there's also not the scope of the initial POC, so I think you can go have a look at the ticket and add in some more of those mappings, because I think Luca also added in the field-based mappings of those events, and they're just not.
+ Andie   27:19 Okay. Yes, yes. ACS.
+ Joy Lin   27:35 Good.
+ Carsten Perthel   27:38 right now in the code. But I don't want to block this one PR just for some missing features. So I just merged it because the scaffolding is in place. It looks good to me. And then I saw that I have to.
+ Andie   27:40 I... I love you.
+ Carsten Perthel   27:55 modify something that it can be deployed. I have to fix some of our task files to get a deployment in place because it's using some old stuff that maybe isn't working anymore. So that's another task for me, I think for today or tomorrow morning to get the deployment in place for the message bus, not for WSI, for the message bus to the Staging and the production. Scott migrated over the AWS accounts inside the Darwin organization, so that's great.
+ Andie   28:26 This.
+ Carsten Perthel   28:35 But now I have to align the deployment task files because we don't have any CI pipelines for the deployment right now. So it's a manual step and I have to align the task files to provide the correct code for the deployment.
+ Andie   28:37 Yeah. Yeah. One. Move. Okay.
+ Joy Lin   28:55 Hello.
+ Andie   28:55 Play song, song.
+ Carsten Perthel   28:56 Oh, Scott is pinging me slack. Okay.
+ Jason Writtenhouse   29:00 So, Carsten has got a lot right now.
+ Carsten Perthel   29:03 Yeah.
+ Joy Lin   29:03 Yeah, can you offload something to Andy since Andy finished his PR?
+ Andie   29:06 Okay.
+ Carsten Perthel   29:09 I think not the deployment part, but it should be a simple one.
+ Andie   29:09 I. Yes. Das.
+ Carsten Perthel   29:18 And I think Marco can have a look at the the the endpoint mappings and the stuff we talked before.
+ Andie   29:21 Yeah.
+ Joy Lin   29:27 Okay.
+ Andie   29:29 Over here.
+ Joy Lin   29:30 Okay, sounds good.
+ Jason Writtenhouse   29:31 Okay.
+ Marco Andreas Wulf   29:32 Thanks.
+ Jason Writtenhouse   29:32 And we still have no...
+ Andie   29:33 What? Right, Legan.
+ Jason Writtenhouse   29:35 Shake out tasks being identified for the bowels, and that's what's keeping me up at night.
+ Carsten Perthel   29:41 Yeah, not right now, yeah.
+ Jason Writtenhouse   29:43 Okay. All right.
+ Andie   29:43 Play. How are you?
+ Jason Writtenhouse   29:49 We're kicking off some more projects too today. Just so you guys know, something with a recommendation engine that RedCam is going to be involved with helping us build that I have architecture on and something to do with shipping, big changes around shipping, pricing.
+ Andie   29:52 Yes.
+ Carsten Perthel   29:52 No.
+ Joy Lin   29:53 Ohh, ****, really?
+ Andie   30:05 Holly.
+ Jason Writtenhouse   30:08 billing something. Eric's team's going to be doing so.
+ Andie   30:14 Yeah, yeah.
+ Jason Writtenhouse   30:14 More fun.
+ Andie   30:16 Sure.
+ Joy Lin   30:17 Yeah.
+ Andie   30:19 What?
+ Jason Writtenhouse   30:19 Paul.
+ Andie   30:20 Yeah.
+ Joy Lin   30:21 Yeah, today.
+ Jason Writtenhouse   30:22 I just think we'll get him straightened out. He needs to understand. Oh, here's the other thing, Joy. When everything's a priority zero, the developer can't really prioritize them. So I think we just need to tell him, bang out the customer ones that are easy, and then we understand it's going to take you a couple days to do analysis on the transaction ones. That's expected. That's why I...
+ Andie   30:22 Mobile. And.
+ Joy Lin   30:31 Nothing's a priority. Yeah, yeah, yeah.
+ Andie   30:36 Yeah.
+ Joy Lin   30:40 Yeah.
+ Jason Writtenhouse   30:46 called him Alice because I knew that that's going to require a lot of digging to figure out. So I think he's just concerned. He's expected to turn it all over in a day because he sees P0, P0, P0. So we'll straighten them out.
+ Andie   30:51 Yeah.
+ Joy Lin   30:52 Okay. Yeah.
+ Andie   31:00 You.
+ Joy Lin   31:01 Yeah, yeah, okay. Yeah, I should change that. Everything is automated to PP Zero. Okay, so yeah.
+ Jason Writtenhouse   31:03 All right. I, I get it.
+ Joy Lin   31:08 Okay, I know we're over time. I'll talk to Annie offline to see where you're at and if you need additional work and I'll work with Carsten to get that handed over to you. And then Carsten, I'm assuming that the POC will be moved out to later next week because you have to unblock some of the addresses.
+ Andie   31:16 Two.
+ Joy Lin   31:27 And all of that, right? That piece of work needs to be unblocked.
+ Andie   31:27 Yes. I know my voice.
+ Carsten Perthel   31:32 Yeah, I think so.
+ Joy Lin   31:33 Okay, just keep me updated. I'll reach out to you after.
+ Andie   31:34 Yes.
+ Joy Lin   31:37 Call.
+ Carsten Perthel   31:37 Okay.
+ Andie   31:39 Okay, bye.
+ Joy Lin   31:39 Okay, thanks everyone. Thanks, Marco. Thanks everyone.
+ Marco Andreas Wulf   31:42 Okay. Thank you. Bye. Bye.
+ Andie   31:43 Bye, see you guys.
+ Carsten Perthel   31:44 Have a nice one.
+ Joy Lin   31:44 Yeah, I...
+ Joy Lin stopped transcription

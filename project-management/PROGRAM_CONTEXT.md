@@ -1,12 +1,6 @@
-# Program Context
+# Program Context — WSI API Project
 
-Single source of truth for **repos, Jira boards, people, acronyms, and key docs** so Cursor can
-resolve references in meeting transcripts (ticket IDs, epic names, repo names, team shorthand).
-
-**Fill this in when you fork the template** — or ask Cursor to interview you and populate it.
-Update whenever new repos, boards, or epics are introduced.
-
-**Last updated:** 2026-07-08
+**Last updated:** 2026-07-08 (populated from Jul 8 SoS transcript ingest)
 
 ---
 
@@ -14,59 +8,61 @@ Update whenever new repos, boards, or epics are introduced.
 
 | Field | Value |
 |-------|-------|
-| **Program name** | Sample Project |
-| **One-line scope** | Example program for demonstrating the meeting-notes workflow |
-| **Program lead** | Jamie Chen |
-| **Primary PO** | Priya Sharma |
+| **Program name** | WSI API Project (WSI → Darwin migration) |
+| **One-line scope** | Migrate WSI partner API from SAP to Darwin without changing the REST contract |
+| **Program lead** | Joy Lin |
+| **Tracks** | Track A: WSI REST bridge (`dcx-wsi-bridge-bal`); Track B: message bus (Darwin events → Fly) |
 
 ---
 
 ## Jira boards & epics
 
-| Board / project key | URL | What it's for |
-|---------------------|-----|---------------|
-| `SAMPLE` | `https://your-org.atlassian.net/browse/SAMPLE` | Sample program board |
-| — | — | *Add your real boards: e.g. DA, DFADE, WSI* |
-
-### Key epics & labels
-
-| ID | Name | What it tracks |
-|----|------|----------------|
-| SAMPLE-1 | Sample epic | Placeholder — replace with real epics |
-| — | — | *Add epics referenced on calls: e.g. DFADE-133, DFADE-158* |
+| Board / project key | What it's for |
+|---------------------|---------------|
+| **DA** | Darwin API / per-endpoint delivery (DFADE-133 epic) |
+| **DFADE** | Functional gaps blocking API work |
+| **DFADE-158** | Missing Darwin events (DA-919 → DA-929) |
+| **DFADE-114** | Enterprise / multi-license (Fahad) |
+| **DFADE-154** | Contract domain (Stefan) |
+| **DA-902** | Message bus program epic |
+| **DA-911** | Event mapping / transform spec (Luca) |
+| **DA-913** | Message bus implementation (Andie) |
 
 ### Ticket prefix glossary
 
 | Prefix | Meaning |
 |--------|---------|
-| `SAMPLE-` | Sample project tickets |
-| — | *Add prefixes your team uses on calls: DA-, DFADE-, etc.* |
+| `DA-` | Darwin API board |
+| `DFADE-` | Functional gap / migration blocker |
 
 ---
 
 ## Repos & codebases
 
-List repos Cursor should know about when transcripts mention code, PRs, or services.
-If repos live in a **multi-repo workspace**, include local paths.
-
-| Repo | Role | URL / local path | Branch (if relevant) |
-|------|------|------------------|----------------------|
-| `pm-meeting-notes-template` | This notes repo | `https://github.com/joyjlinnn/pm-meeting-notes-template` | `main` |
-| — | — | — | *Add service repos, analysis repos, etc.* |
+| Repo | Role | Notes |
+|------|------|-------|
+| `wsi-darwin-migration-analysis` | Analysis + meeting notes (sibling) | Coverage, open questions, architecture |
+| `dcx-wsi-bridge-bal` | WSI REST bridge (proxy BAL) | Carsten + Marco |
+| `dsb-bi-wsi` | WSI Java gateway | SAP/Darwin routing switch |
+| `dcx-customer-bal` | Customer BAL | BP, attributes, addresses |
+| `dcx-transaction-bal` | Transaction BAL | Subscriptions, billing |
+| `dsb-fly` | Message bus (SNS/SQS/Lambda) | Andie; Scott migrated AWS account |
 
 ---
 
 ## People & ownership
 
-| Name | Role | Owns / contact for |
-|------|------|-------------------|
-| Jamie Chen | Program lead | Standups, Jira setup |
-| Priya Sharma | Product | Scope, tooling decisions |
-| Alex Rivera | Partner comms (proposed) | External stakeholder updates |
-| Morgan Lee | Engineering | Technical spikes |
-| Joy Lin | Meeting notes workflow | Transcript ingest |
-
-*Add or replace with your team. Cursor uses this to validate owner names in action items.*
+| Name | Role | Owns |
+|------|------|------|
+| Joy Lin | Program / PO | Jira routing, SoS, open questions |
+| Jason Writtenhouse | Architecture | Gateway, BAL shakeout concern |
+| Carsten Perthel | WSI bridge + message bus deploy | Bridge mapping, deploy task files |
+| Marco Andreas Wulf | WSI bridge | Endpoint mappings, pairs with Carsten |
+| Luca Kersting | Mapping review | Field mapping, gap tickets, BAL dependency analysis |
+| Andie | Message bus impl | DA-913 field mappings |
+| Scott Montreuil | Infra | AWS account migration (done Jul 8) |
+| Paul Trimble | Event producers | DA-919/930–932 (customer priority) |
+| Tina | Program | PO routing, capacity |
 
 ---
 
@@ -74,8 +70,10 @@ If repos live in a **multi-repo workspace**, include local paths.
 
 | Term | Meaning |
 |------|---------|
-| PO | Product owner |
-| — | *Add domain terms your calls use: BAL, WSI, DFADE, OCS, etc.* |
+| BAL | Business abstraction layer (Darwin `dcx-*-bal` services) |
+| WSI | Web service interface — partner-facing REST gateway |
+| Fly | Legacy message bus (SNS/SQS) for client notifications |
+| POC | Proof of concept — 4–5 BP endpoints on bridge staging |
 
 ---
 
@@ -85,30 +83,14 @@ If repos live in a **multi-repo workspace**, include local paths.
 |------|-------|
 | Open questions | [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) |
 | Next steps | [POC_NEXT_STEPS.md](POC_NEXT_STEPS.md) |
-| Meeting summaries | [meeting-summaries/](meeting-summaries/) |
-| — | *Add: architecture docs, mapping sheets, Confluence pages, Slack canvases* |
-
----
-
-## Workspace notes
-
-Optional: how this repo relates to other folders on disk or in Cursor.
-
-```
-# Example multi-repo workspace layout:
-# ~/projects/my-program/
-#   my-program-notes/     ← this repo
-#   dcx-customer-bal/       ← service repo
-#   my-program-analysis/  ← analysis / coverage repo
-```
+| Luca event mapping sheet | [SharePoint spreadsheet](https://darwincxllc-my.sharepoint.com/:x:/g/personal/joy_lin_darwin_cx/IQBoIcLDd7w0S74x5zw5Zvp7AZo8UY_M1LCfhxH7DOcMOSw?e=peuJAe) |
 
 ---
 
 ## Discovery log
 
-Cursor appends newly confirmed references here (after you approve). Remove duplicates into the
-tables above during periodic cleanup.
-
 | Date | Reference | Resolved as | Confirmed by |
 |------|-----------|-------------|--------------|
-| — | — | — | — |
+| 2026-07-08 | SAP→Darwin client mapping in bridge? | WSI config source of truth; JSON in message bus | Jason / Carsten |
+| 2026-07-08 | Defer multi-address to post-POC? | Implement now | Jason / Carsten / Joy |
+| 2026-07-08 | BAL shakeout scope | Pending Luca's dependency analysis | Joy |

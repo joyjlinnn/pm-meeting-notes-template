@@ -8,6 +8,10 @@ manual copy-paste across docs.
 
 **Last updated:** 2026-07-08
 
+> **Live example:** This repo includes a real **WSI API Scrum of Scrums (Jul 8, 2026)** ingest —
+> transcript → summary → open questions → next steps → Slack digest. Sample placeholder content is in
+> `_template-sample/` folders.
+
 ---
 
 ## How it works
@@ -163,7 +167,9 @@ When you **Use this template** for a new project:
 | Action Items | Action, owner, timing table |
 | Notes | Bullets + optional detail tables |
 
-**Sample:** [Sample Project Kickoff - Summary 2026-07-08.md](project-management/meeting-summaries/Sample%20Project%20Kickoff%20-%20Summary%202026-07-08.md)
+**Sample:** [Scrum of Scrums - Summary 2026-07-08.md](project-management/meeting-summaries/Scrum%20of%20Scrums%20-%20Summary%202026-07-08.md) (real WSI ingest)
+
+Template placeholder: `meeting-summaries/_template-sample/`
 
 ### Open questions (`OPEN_QUESTIONS.md`)
 
@@ -181,9 +187,8 @@ When you **Use this template** for a new project:
 
 ## Sample content
 
-This template ships with **placeholder content** (sample kickoff meeting, Q1–Q3, starter
-action list) so you can see the format before uploading real transcripts. Replace or extend
-as you go.
+The repo includes a **real WSI API SoS (Jul 8, 2026)** workflow example from an uploaded transcript.
+Original placeholder kickoff content is archived under `_template-sample/`.
 
 ---
 
