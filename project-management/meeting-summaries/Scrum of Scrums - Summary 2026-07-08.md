@@ -144,7 +144,6 @@ Other missing-event owners (Fahad, Kalrav, Stefan, etc.) — see spreadsheet.
 | Fahad confirmation on enterprise / multi-license (DFADE-114)? | **Open** — see [mapping spreadsheet](https://darwincxllc-my.sharepoint.com/:x:/g/personal/joy_lin_darwin_cx/IQBoIcLDd7w0S74x5zw5Zvp7AZo8UY_M1LCfhxH7DOcMOSw?e=peuJAe) |
 | Timelines for missing events (Kalrav fulfillment, Stefan contracts)? | **Open** — owners in spreadsheet; no new dates this call |
 | **BAL shakeout** — what work is needed on BAL teams beyond wiring event producers? | **Open** — Jason's concern: producer tickets (Paul's) cover *emitting* events from existing code paths, but unknown how much broader BAL-layer change is needed for migration. **Dependent on Luca's dependency analysis** and mapping any gaps to the right BAL owners (Q18). |
-| Duplicate Fly notification: `transaction.updated` vs `contract.updated`? | **Open** — unchanged |
 | Gateway OpenAPI automation drift (Campaign Studio QA)? | **Open** — unchanged from Jul 6 |
 | Full endpoint catalog vs POC — schedule beyond 4–5 BP? | **Open** — POC on hold, no date |
 | Message bus JSON config — exact file location / sync process with WSI config? | **Open** — principle agreed; implementation TBC |
