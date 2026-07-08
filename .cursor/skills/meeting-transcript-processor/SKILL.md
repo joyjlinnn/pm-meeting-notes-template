@@ -176,37 +176,59 @@ If the user provides a file or long paste, save a copy to:
 
 ## Step 4 — Generate Slack digest
 
-After every meeting summary (especially **Scrum of Scrums**), produce a **short, casual Slack message**
-the user can copy-paste. **Keep it tight** — bullets, not paragraphs.
+After every meeting summary (especially **Scrum of Scrums**), produce a Slack message matching the user's
+**established format** (see example below). Save to
+`project-management/meeting-summaries/Slack - <Topic> YYYY-MM-DD.md` and show in chat.
 
-**Save to:** `project-management/meeting-summaries/Slack - <Topic> YYYY-MM-DD.md`
-
-### Format rules
-
-- **Brief** — one line opener max; skip long explanations
-- **Per person:** `@name` then **bullet list** of their items (even if only one item, use a bullet)
-- Multiple items for one person → **always bullets**, never a run-on sentence
-- Short phrases, not full sentences where possible
-- One line for shared/open items at the end (optional)
-- Link to summary file path only — no essay
-- 0–1 emoji in opener; skip emoji elsewhere unless user prefers otherwise
-- Only tag people with action items or explicit asks
-
-### Template
+### Format (match user's style)
 
 ```markdown
-SoS recap M/D 👋
+WSI API — SoS summary (<Day> <Mon> <D>)
 
-**@person**
-• <item 1>
-• <item 2>
+Quick recap: <2–4 semicolon-separated highlights from the call>
 
-**@person**
-• <item>
+@Full Name
 
-Still open: <comma-separated, max 3>
+<action line 1 — no bullet symbol>
+<action line 2>
+...
+
+@Full Name
+
+...
+
+Still open: <comma-separated, max 3–4>
 
 Notes: `meeting-summaries/<Summary file>.md`
 ```
 
-**Avoid:** "big day for you", "when you can", "ping me if…", repeating context already in the summary.
+### Rules
+
+- **Title line** — `WSI API — SoS summary (Tue Jul 8)` style (day, abbreviated month, date)
+- **Quick recap** — one line, semicolon-separated clauses; high-level only
+- **Per person** — `@First Last` on its own line, blank line, then **plain action lines** (no `•` bullets)
+- Multiple items for one person → **one line per item**, stacked (not paragraphs)
+- Use `@Name` when referencing another person in an action line
+- Short, imperative phrasing ("Fix X", "Confirm Y with @Z") — match prior digests
+- Include **Still open** line for carried-forward questions
+- Only tag people with action items or explicit asks
+- No "thanks everyone", no emoji unless user uses them in their examples
+- For non-WSI programs, adapt the title prefix (e.g. `Message Bus — SoS summary`)
+
+### Example (user's prior format — follow this tone)
+
+```
+WSI API — SoS summary (Mon Jul 6)
+
+Quick recap: message bus mapping mostly done where Darwin events exist; bridge POC scoped to 4–5 BP endpoints this week; missing event PO ownership mostly confirmed (Fahad still open).
+
+@Luca Kersting
+
+focus on remaining field-level mapping (endpoint rows)
+gap ticket dependency mapping for the rest of the endpoints (capability level please so we can start assigning tickets to BAL owners for build)
+
+@Carsten
+
+Review @andie's message bus mapping PR
+...
+```
