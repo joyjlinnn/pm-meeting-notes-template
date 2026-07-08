@@ -16,7 +16,10 @@ This repo holds living program documents. The human owner is the source of truth
 
 ## When processing meeting transcripts
 
-1. **Raise questions** if the transcript is ambiguous, incomplete, or contradicts existing docs.
+1. **Read `PROGRAM_CONTEXT.md` first** — resolve tickets, repos, epics, people, and acronyms from
+   that file. If it is incomplete or the transcript references unknown items, **ask the user**
+   what repos, Jira boards, and docs to add before finishing the summary.
+2. **Raise questions** if the transcript is ambiguous, incomplete, or contradicts existing docs.
 2. **Do not invent decisions** — if something was not decided on the call, mark it **Open** in
    `OPEN_QUESTIONS.md` rather than resolving it.
 3. **Do not invent owners or dates** — use only what the transcript states; flag gaps for the user.

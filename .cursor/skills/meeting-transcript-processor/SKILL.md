@@ -20,6 +20,36 @@ This repo (PM meeting notes template) maintains three linked artifacts from ever
 - User uploads or pastes a meeting transcript
 - User asks to "summarize this meeting" or "update open questions / next steps from this call"
 - User references a transcript file under `project-management/transcripts/`
+- User sets up a new program repo or mentions Jira boards / other repos for the first time
+
+## Step 0 — Establish or refresh program context
+
+**Read** `project-management/PROGRAM_CONTEXT.md` before writing anything.
+
+### If context is missing or incomplete
+
+Ask the user (use `AskQuestion` or a short numbered list in chat):
+
+1. **Jira** — Which boards/project keys? Key epics? Common ticket prefixes?
+2. **Repos** — Which codebases are referenced on calls? GitHub URLs and/or local paths?
+3. **People** — Who owns what? (validates action-item owners)
+4. **Terms** — Acronyms and domain shorthand (BAL, epic names, program codenames)
+5. **Docs** — Confluence pages, spreadsheets, architecture repos to link in summaries
+6. **Workspace** — Are other repos open in Cursor that should be listed for cross-reference?
+
+**Do not guess.** If the user wants to proceed without full context, flag unknown references in
+the summary **Notes** and in `OPEN_QUESTIONS.md`.
+
+### While processing
+
+- Match ticket IDs (`DA-911`, `DFADE-158`, etc.) to entries in PROGRAM_CONTEXT.
+- When a new reference appears, ask the user → update PROGRAM_CONTEXT (pending their review).
+- Optionally pull detail from linked repos (README, open questions, tickets) **only if** the user
+  has pointed Cursor at those paths or confirmed they are in scope.
+
+### After user confirms new context
+
+Update `PROGRAM_CONTEXT.md` tables and the **Discovery log**. Show changes for review before commit.
 
 ## Step 1 — Create the meeting summary
 
@@ -89,7 +119,8 @@ Use tables for walkthroughs, status updates, or domain-specific detail not cover
 - Prefer **tables** for decisions, actions, open questions, and structured walkthroughs.
 - Add **detail tables** where they aid digestion (e.g. ticket lists, ownership matrices).
 - Include **post-call or async context** in Notes if the user provides it.
-- Link to related summaries and to `OPEN_QUESTIONS.md` / `POC_NEXT_STEPS.md` where relevant.
+- Link to related summaries, `PROGRAM_CONTEXT.md`, `OPEN_QUESTIONS.md` / `POC_NEXT_STEPS.md` where relevant.
+- Resolve ticket/repo/people references using `PROGRAM_CONTEXT.md`; flag unknowns instead of inventing.
 
 ## Step 2 — Update OPEN_QUESTIONS.md
 

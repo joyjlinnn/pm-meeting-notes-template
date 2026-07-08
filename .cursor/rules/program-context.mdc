@@ -1,0 +1,46 @@
+---
+description: Program context — repos, Jira, people, acronyms; ask user when references are unknown
+alwaysApply: true
+---
+
+# Program context
+
+Meeting transcripts reference **tickets, repos, epics, people, and acronyms**. Cursor must resolve
+these using `project-management/PROGRAM_CONTEXT.md` — not guess.
+
+## Before processing a transcript (or on first repo setup)
+
+1. **Read** `project-management/PROGRAM_CONTEXT.md`.
+2. If it is empty, still has template placeholders, or is missing boards/repos the user mentioned:
+   **ask the user** what context to add before writing summaries. Use a short checklist:
+
+   - Which **Jira boards / project keys** apply? (URLs, epic IDs, common ticket prefixes)
+   - Which **repos** should Cursor know about? (names, GitHub URLs, local paths, key branches)
+   - Who are the **key people** and what do they own?
+   - Any **acronyms or domain terms** the team uses on calls?
+   - Any **key docs** (Confluence, spreadsheets, architecture repos) to link?
+
+3. **Do not proceed** with a full transcript ingest until the user confirms or declines optional context.
+   If they decline, note unresolved references explicitly in the summary and `OPEN_QUESTIONS.md`.
+
+## While processing a transcript
+
+1. When the transcript mentions a **ticket, repo, epic, or person** not in `PROGRAM_CONTEXT.md`:
+   - **Ask the user** what it refers to, or
+   - Flag it in the summary **Notes** and add a row to the **Discovery log** (pending confirmation).
+2. **Cross-check** ticket IDs and repo names against `PROGRAM_CONTEXT.md` and linked repos when
+   the user has added local paths or clone URLs.
+3. If the user has other repos open in the workspace, **ask** whether those repos should be
+   added to `PROGRAM_CONTEXT.md` for future sessions.
+
+## After the user confirms new context
+
+1. Update the relevant tables in `PROGRAM_CONTEXT.md`.
+2. Add a dated row to **Discovery log** if useful for audit.
+3. Show the user the proposed `PROGRAM_CONTEXT.md` changes and **wait for review** before commit.
+
+## Reference style in summaries
+
+- Link Jira tickets as `` `PROJ-123` `` with board context from PROGRAM_CONTEXT when known.
+- Link repos by name and path/URL from PROGRAM_CONTEXT.
+- Use full names on first mention in a summary; shorthand OK after that if defined in PROGRAM_CONTEXT.

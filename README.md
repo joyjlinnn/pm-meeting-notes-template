@@ -45,9 +45,13 @@ you work in this repo.
    - **Option A:** Clone and rename the folder (e.g. `message-bus-pm-notes`).
    - **Option B:** Use GitHub **Use this template** (if enabled) to create your own copy.
 2. **Open the folder in Cursor.**
-3. **Replace sample content** — update program name in `OPEN_QUESTIONS.md`, `POC_NEXT_STEPS.md`,
-   and delete or overwrite the sample kickoff summary.
-4. **Upload your first real transcript** and ask Cursor to process it.
+3. **Fill in program context** — edit `project-management/PROGRAM_CONTEXT.md` with your Jira
+   boards, repos, people, acronyms, and key doc links. Or ask Cursor: *"Help me set up
+   PROGRAM_CONTEXT for my program."*
+4. **Replace sample content** — update `OPEN_QUESTIONS.md`, `POC_NEXT_STEPS.md`, and the sample
+   kickoff summary.
+5. **Upload your first real transcript** — Cursor will ask for any missing context (repos, boards,
+   unknown ticket IDs) before summarizing.
 
 ---
 
@@ -55,6 +59,7 @@ you work in this repo.
 
 ```
 project-management/
+  PROGRAM_CONTEXT.md          # Repos, Jira boards, people, acronyms — read before ingest
   OPEN_QUESTIONS.md           # Decision register — open questions + status
   POC_NEXT_STEPS.md           # Living action list — current plan + history
   meeting-summaries/          # One summary per meeting (generated)
@@ -62,6 +67,7 @@ project-management/
 .cursor/
   skills/meeting-transcript-processor/SKILL.md
   rules/meeting-notes-workflow.mdc
+  rules/program-context.mdc
   rules/collaboration.mdc
   rules/standards-bootstrap.mdc
 ```
@@ -70,15 +76,17 @@ project-management/
 
 ## Cursor rules setup
 
-This template ships with **three repo rules** and **one skill** under `.cursor/`. They apply
+This template ships with **four repo rules** and **one skill** under `.cursor/`. They apply
 automatically when you open the repo folder in Cursor (not the parent workspace).
 
 | File | Purpose |
 |------|---------|
 | `rules/standards-bootstrap.mdc` | Tells the agent to load the skill + rules before editing |
+| `rules/program-context.mdc` | Asks for repos, Jira boards, people, acronyms when unknown |
 | `rules/meeting-notes-workflow.mdc` | Transcript → summary → open questions → next steps format |
 | `rules/collaboration.mdc` | Review with you before git; ask when unclear; no guessing decisions |
 | `skills/meeting-transcript-processor/SKILL.md` | Step-by-step ingest template and quality rules |
+| `project-management/PROGRAM_CONTEXT.md` | **You fill this in** — the agent's lookup table for your program |
 
 These mirror the patterns used in the
 [WSI Darwin migration analysis](https://github.com/DarwinCX/wsi-darwin-migration-analysis) repo:
@@ -86,6 +94,13 @@ a **workflow rule**, a **collaboration/git hygiene rule**, a **bootstrap rule** 
 agent to read skills first, and a **domain skill** for the core task.
 
 ### What each rule enforces
+
+**Program context (`program-context.mdc` + `PROGRAM_CONTEXT.md`)**
+
+- On setup or first transcript, **ask you** for Jira boards, repos, people, acronyms, and key docs
+- Read `PROGRAM_CONTEXT.md` before every ingest to resolve ticket IDs and repo names
+- When a transcript mentions something unknown, **ask** — then update PROGRAM_CONTEXT after you confirm
+- Optionally cross-reference linked repos in your workspace when you confirm they're in scope
 
 **Collaboration (`collaboration.mdc`)**
 
@@ -114,7 +129,8 @@ under **Cursor Settings → Rules → User Rules** (customize the owner name):
 ```
 - Only create git commits when I explicitly ask. Before committing, show me what changed and wait for my review.
 - Never push to the remote unless I explicitly ask.
-- When processing meeting transcripts, ask clarifying questions if anything is ambiguous or missing.
+- Before processing meeting transcripts, read PROGRAM_CONTEXT.md and ask me for missing Jira boards, repos, people, or acronyms.
+- When a transcript references an unknown ticket, repo, or term, ask me what it means before assuming.
 - Do not invent decisions, owners, or dates — mark unknowns as Open in OPEN_QUESTIONS.md.
 - After updating docs, summarize which files changed and what questions remain open.
 ```
@@ -125,8 +141,8 @@ When you **Use this template** for a new project:
 
 1. Keep all `.cursor/rules/` and `.cursor/skills/` files as-is (they travel with the repo).
 2. Replace sample content in `project-management/`.
-3. Optionally add a program-specific rule, e.g. `.cursor/rules/my-program-context.mdc`, with your
-   team names, Jira board, and key doc links (similar to how the WSI workspace uses a project-context rule).
+3. Optionally add a program-specific rule, e.g. `.cursor/rules/my-program-context.mdc`, with extra
+   team or domain facts — or put everything in `PROGRAM_CONTEXT.md` (recommended for POs).
 
 ---
 

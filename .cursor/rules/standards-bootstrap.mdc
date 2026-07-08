@@ -8,8 +8,10 @@ alwaysApply: true
 Before making changes in this repository:
 
 1. Follow `.cursor/rules/collaboration.mdc` (review with user before git; ask when unclear).
-2. Follow `.cursor/rules/meeting-notes-workflow.mdc` (summary format and living-doc updates).
-3. Read `.cursor/skills/meeting-transcript-processor/SKILL.md` when processing a transcript or
+2. Follow `.cursor/rules/program-context.mdc` (repos, Jira, people — ask user when unknown).
+3. Follow `.cursor/rules/meeting-notes-workflow.mdc` (summary format and living-doc updates).
+4. Read `project-management/PROGRAM_CONTEXT.md` for ticket, repo, and people resolution.
+5. Read `.cursor/skills/meeting-transcript-processor/SKILL.md` when processing a transcript or
    updating `project-management/meeting-summaries/`, `OPEN_QUESTIONS.md`, or `POC_NEXT_STEPS.md`.
 
 These standards are mandatory for all sessions in this repository.
