@@ -69,6 +69,7 @@ project-management/
   meeting-summaries/          # One summary per meeting (generated)
   transcripts/                # Optional: raw transcripts for reference
   message-bus/                # Example: sub-workstream tracking (status tables, previews, canvas)
+  workstreams/                # Example: two-track visual overview (Cursor canvas)
 .cursor/
   skills/meeting-transcript-processor/SKILL.md
   rules/meeting-notes-workflow.mdc
