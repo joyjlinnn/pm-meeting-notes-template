@@ -1,0 +1,45 @@
+---
+description: Meeting notes workflow — transcript ingest, summaries, open questions, next steps
+globs:
+  - project-management/**
+alwaysApply: true
+---
+
+# Meeting Notes Workflow
+
+This repo turns meeting transcripts into structured project-management artifacts.
+
+## On transcript upload
+
+When the user provides a meeting transcript (paste or file under `project-management/transcripts/`):
+
+1. **Create a meeting summary** in `project-management/meeting-summaries/` named
+   `<Topic> - Summary YYYY-MM-DD.md`.
+2. **Update** `project-management/OPEN_QUESTIONS.md` — add a dated update block; resolve or add questions.
+3. **Update** `project-management/POC_NEXT_STEPS.md` — refresh the "Current plan" section; move superseded items to Historical.
+
+Follow the format in existing files and `.cursor/skills/meeting-transcript-processor/SKILL.md`.
+
+## Meeting summary format (required sections)
+
+- Title, date, duration, topic, attendees, related links
+- Overview (narrative)
+- Decisions Made (table)
+- Open / Carried Forward (table: question, status)
+- Action Items (table: action, owner, timing)
+- Notes (bullets) + optional detail tables
+
+## Open questions rules
+
+- One register file: `OPEN_QUESTIONS.md`
+- Top: dated **Update** paragraphs per ingest
+- Status summary table: #, Question, Type, Blocks, Status
+- Per-question detail: Context, Options, Blocks, Decision/Status
+
+## Next steps rules
+
+- `POC_NEXT_STEPS.md` is a living doc — "Current plan" at top, historical sections below
+- Action tables: #, Action, Owner, Status (and Timing where relevant)
+- Link to source meeting summaries
+
+Do not delete historical content without explicit user request; append and restructure the current plan instead.

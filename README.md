@@ -1,0 +1,104 @@
+# PM Meeting Notes Template
+
+Turn meeting transcripts into structured, living project documents — **meeting summaries**,
+an **open questions register**, and a **next steps** action list — using Cursor.
+
+Built for product owners and program leads who want consistent meeting artifacts without
+manual copy-paste across docs.
+
+**Last updated:** 2026-07-08
+
+---
+
+## How it works
+
+```mermaid
+flowchart LR
+  A[Upload transcript] --> B[AI generates summary]
+  B --> C[meeting-summaries/]
+  B --> D[OPEN_QUESTIONS.md]
+  B --> E[POC_NEXT_STEPS.md]
+```
+
+### Workflow (3 steps)
+
+1. **Upload your meeting transcript** — paste it into Cursor chat, or drop a file under
+   `project-management/transcripts/`.
+2. **AI summarizes it** — a new meeting summary is created in
+   `project-management/meeting-summaries/` (date, duration, topic, attendees, overview,
+   decisions, open questions, action items, notes).
+3. **Living docs are updated** — `OPEN_QUESTIONS.md` and `POC_NEXT_STEPS.md` pick up new
+   decisions, carried-forward questions, and action items from the transcript.
+
+> **Cursor prompt:** *"Here is the transcript from today's standup — summarize it and update
+> the open questions and next steps files."*
+
+The agent skill at `.cursor/skills/meeting-transcript-processor/SKILL.md` defines the exact
+format and update rules. The Cursor rule in `.cursor/rules/` applies automatically when
+you work in this repo.
+
+---
+
+## Quick start (product owners)
+
+1. **Use this repo for your program**
+   - **Option A:** Clone and rename the folder (e.g. `message-bus-pm-notes`).
+   - **Option B:** Use GitHub **Use this template** (if enabled) to create your own copy.
+2. **Open the folder in Cursor.**
+3. **Replace sample content** — update program name in `OPEN_QUESTIONS.md`, `POC_NEXT_STEPS.md`,
+   and delete or overwrite the sample kickoff summary.
+4. **Upload your first real transcript** and ask Cursor to process it.
+
+---
+
+## Repo layout
+
+```
+project-management/
+  OPEN_QUESTIONS.md           # Decision register — open questions + status
+  POC_NEXT_STEPS.md           # Living action list — current plan + history
+  meeting-summaries/          # One summary per meeting (generated)
+  transcripts/                # Optional: raw transcripts for reference
+.cursor/
+  skills/meeting-transcript-processor/SKILL.md
+  rules/meeting-notes-workflow.mdc
+```
+
+---
+
+## Document formats
+
+### Meeting summary
+
+**Path:** `meeting-summaries/<Topic> - Summary YYYY-MM-DD.md`
+
+| Section | Format |
+|---------|--------|
+| Header | Date, duration, topic, attendees, related links |
+| Overview | 1–3 paragraph narrative |
+| Decisions Made | Numbered table |
+| Open / Carried Forward | Question + status table |
+| Action Items | Action, owner, timing table |
+| Notes | Bullets + optional detail tables |
+
+**Sample:** [Sample Project Kickoff - Summary 2026-07-08.md](project-management/meeting-summaries/Sample%20Project%20Kickoff%20-%20Summary%202026-07-08.md)
+
+### Open questions (`OPEN_QUESTIONS.md`)
+
+- Dated **Update** blocks at the top after each meeting ingest
+- **Status summary** table: `#`, question, type, blocks, status
+- Per-question detail: context, options, recommendation, blocks, decision/status
+
+### Next steps (`POC_NEXT_STEPS.md`)
+
+- **Current plan** at the top — action tables by track/theme with owner and status
+- **Historical** sections below for provenance
+- Links back to meeting summaries and open questions
+
+---
+
+## Sample content
+
+This template ships with **placeholder content** (sample kickoff meeting, Q1–Q3, starter
+action list) so you can see the format before uploading real transcripts. Replace or extend
+as you go.
